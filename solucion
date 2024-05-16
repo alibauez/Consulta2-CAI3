@@ -1,0 +1,50 @@
+import time
+from phe import paillier
+
+# Generación de claves Paillier
+def generate_paillier_keys():
+    public_key, private_key = paillier.generate_paillier_keypair()
+    return public_key, private_key
+
+# Encriptación Paillier
+def paillier_encrypt(data, public_key):
+    encrypted_data = public_key.encrypt(data)
+    return encrypted_data
+
+# Desencriptación Paillier
+def paillier_decrypt(encrypted_data, private_key):
+    decrypted_data = private_key.decrypt(encrypted_data)
+    return decrypted_data
+
+# Suma homomórfica Paillier
+def homomorphic_sum(encrypted_values, public_key):
+    sum_encrypted = encrypted_values[0]
+    for value in encrypted_values[1:]:
+        sum_encrypted += value
+    return sum_encrypted
+
+# Iniciar temporizador
+start_time = time.time()
+
+# Generación de claves Paillier
+public_key, private_key = generate_paillier_keys()
+
+# Lista de valores a cifrar y sumar
+values = [2000, 150]
+
+# Encriptación Paillier de los valores
+encrypted_values = [paillier_encrypt(value, public_key) for value in values]
+
+# Suma homomórfica de los valores cifrados
+homomorphic_result = homomorphic_sum(encrypted_values, public_key)
+
+# Desencriptación Paillier del resultado homomórfico
+homomorphic_result_decrypted = paillier_decrypt(homomorphic_result, private_key)
+
+# Detener temporizador y calcular tiempo total
+end_time = time.time()
+total_time = end_time - start_time
+
+print("Resultado de la suma homomórfica (cifrado):", homomorphic_result.ciphertext())
+print("Resultado de la suma homomórfica (descifrado):", homomorphic_result_decrypted)
+print("Tiempo total:", total_time, "segundos")
